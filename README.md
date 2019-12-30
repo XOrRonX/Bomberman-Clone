@@ -1,15 +1,26 @@
 # Bomberman-Clone
 A clone of the game "Bomberman" 
 
+## Getting Started
 
-1. Bomberman 
+### Prerequisites
 
-2. Name :
-   Or Ron 
+In order to run the project you need:
+1. Visual Studio with Windows 10 SDK version 10.0.17763.0
+
+2. SFML
+
+### Installing
+
+1. Download Visual Studio from [here](https://visualstudio.microsoft.com/downloads/).
+In installation process choose "Windows 10 SDK (10.0.17763.0)" at the Individual components tab. If you have Visual Studio installed already you can download SDK from "Visual Studio Installer".
+
+2. Download sfml 2.5.0 from [here](https://drive.google.com/open?id=1_D0G_IYPpvv2JnhslLdmXZRFd6zsjqQx).
+just extract it and run "SFMLInstall.bat" as administrator (extraction path must contain english letters only).
+
    
    
-   
-3. Prorgam explanation: 
+### Prorgam explanation: 
 
 	this program implement the Bomberman game.
 	In this game there are a few screens, a player win the game when 
@@ -37,10 +48,7 @@ A clone of the game "Bomberman"
 		it the guard put a bomb on the robot tryin to kill him with a bomb
 
 
-4. Design:
-
-
-
+### Design:
 
 Main.cpp takes care of two things:
 1. checking if there are more files of screens to read  
@@ -107,14 +115,14 @@ Class Controller is actually a screen
 		5. all the graphical objects like Window
 	
 
-5. File Format
+### File Format
 
 	Each file is only one screen
 	Main() is looking for the following name format "board.bombX.txt"
 	where X is a numebr starting from 1 and next file will be 2 next 3 and so on
 	when main() does not find the next file it assumes no more files or screens.
 
-6. List of files:
+### List of files:
 
 main.cpp  - holds the game of class Bomberman, in endless loop call the game until
 			the user chose in the menu to exit
@@ -146,7 +154,7 @@ board.bomb4.txt
 List of graphical used files sound and pictures
 
 
-7. Main data structures:
+### Main data structures:
 		Class Controller which holds many objects
 		1. m_board of class Board - hold all the info read on one screen from a file 
 		2. m_gameObjects - vector of GameObjects of Guard/Robot/Ghost 
@@ -158,7 +166,7 @@ List of graphical used files sound and pictures
 						screen
 
 
-8. Algorithms:
+### Algorithms:
 			Guard Move:
 
 			The algorithm to decide where to move the smart Guard
@@ -167,9 +175,9 @@ List of graphical used files sound and pictures
 			  2. Take a random step in case of a collision 
 			 
 
-9. known bugs - no known bugs
+### known bugs - no known bugs
 
-10. comment -
+### comment -
 
 
 the main differences and aditions to the original project definition:
