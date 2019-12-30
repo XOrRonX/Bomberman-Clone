@@ -2,7 +2,8 @@
 A clone of the game "Bomberman" 
 
 # Importent:
-### Download ZIP file
+### For Downloading the game , please download the ZIP file
+
 
 ## Getting Started
 
