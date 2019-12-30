@@ -2,7 +2,7 @@
 A clone of the game "Bomberman" 
 
 # Important
-### For using this project, please download ZIP file on top. 
+### To use this project, please download ZIP file OrRon-Bomberman.zip. 
 
 
 ## Getting Started
