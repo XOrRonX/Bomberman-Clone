@@ -1,8 +1,8 @@
 # Bomberman-Clone
 A clone of the game "Bomberman" 
 
-# Importent:
-### For Downloading the game , please download the ZIP file
+# Important
+### For using this project, please download ZIP file on top. 
 
 
 ## Getting Started
