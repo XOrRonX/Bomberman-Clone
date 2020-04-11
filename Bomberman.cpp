@@ -1,60 +1,31 @@
+/*
+
+Class Bomberman
+This class is managing the whole game
+it is not aware of the details of the game only of the screens and the
+outcome of the next move of the screen.
+When a screen end it move to the next screen
+Screen m_game[MAX_SCREENS] - this is array or Class Screen
+unsigned int m_totalPoints - holds the total point from the last screen
+unsigned int m_numOfScreens - holds how many screean are there
+unsigned int m_activeScreen - holds which of the screens is active
+unsigned int m_lifeLeft - holds how mant lives the robot have
+
+*/
+
+//=============================include=======================================
+
 #include "Bomberman.h"
-#include <memory>
-#include "Controller.h"
-#include <time.h>
-#include <Windows.h>
-#include <SFML/Audio.hpp>
+#include "macros.h"
 
 
-
-Bomberman::Bomberman() :
-	m_window(sf::VideoMode(600, 300), "Bomberman"), // menu screen
-	m_textures(3)
+// the default constructor is basic not touching screens
+Bomberman::Bomberman()
 {
 	m_totalPoints = 0;
 	m_numOfScreens = 0;
 	m_activeScreen = 0;
-	m_lifeLeft = 0;
-	m_endgame.setSize({ 210 , 100 }); // endgame button
-	m_start.setSize({ 210 , 100 });   // start a game button
-	sf::Vector2f endPos;
-	sf::Vector2f startPos;
-	m_window.setVisible(false);   
-	m_font.loadFromFile("Gabriola.TTF");
-	if (!m_textures[VEND].loadFromFile("endgame.png")
-		|| !m_textures[VSTART].loadFromFile("start.png")
-		)
-	{
-		m_window.close();
-		return;
-	}
-
-	endPos = { 175,125 }; // position of the two buttons
-	startPos = { 425,125 };
-
-	//----------------endgame-------------------------------
-
-	m_endgame.setPosition(endPos);
-	m_endgame.setTexture(&m_textures[VEND]);
-	m_endgame.setOrigin(m_endgame.getLocalBounds().width / 2,
-		m_endgame.getLocalBounds().height / 2);
-	
-	//----------------startgame------------------------------
-
-	m_start.setPosition(startPos);
-	m_start.setTexture(&m_textures[VSTART]);
-	m_start.setOrigin(m_start.getLocalBounds().width / 2,
-		m_start.getLocalBounds().height / 2);
-
-	//--------------------sound-----------------------------
-
-	if (!soundBufferSelect.loadFromFile("select.wav"))
-		printf("cannot open file\n");
-	soundSelect.setBuffer(soundBufferSelect);
-
-	if (!music.openFromFile("AMemoryAway.ogg"))
-		printf("cannot open file\n");
-
+	m_lifeLeft = 3;
 }
 
 
@@ -62,146 +33,71 @@ Bomberman::~Bomberman()
 {
 }
 
-// Add a new controller to the vector
-void Bomberman::addController(char *fileName)
+// adds a screen each time there is a new screen 
+void Bomberman::addScreen(char ** matrix,unsigned int numOfLines, 
+								unsigned int numOfSteps)
 {
-	m_controllers.push_back(std::make_unique<Controller,
-		char * & , unsigned int & >(fileName, m_numOfScreens));
+	// calling Screen constructor
+	m_game[m_numOfScreens] = Screen(matrix, numOfLines, numOfSteps, m_numOfScreens);
 	m_numOfScreens++;
 }
 
-
-bool Bomberman::run(unsigned int firstTime)
+void Bomberman::printScreen() const
 {
-	if (firstTime) // show the buttons if first time 
-		           // second time is shown by the options below
-	{
-		switch (hendelEndStartGame()) {
-		case VEND:
-		case VCLOSE:
-			soundSelect.play();
-			return false;
-		case VSTART:
-			soundSelect.play();
-			break;
-		};
-	}
-	
-	music.setLoop(true);
-	music.play();
-	music.setVolume(20.0f);
-	
-	while (m_activeScreen < m_numOfScreens)
-	{
-		m_controllers[m_activeScreen]->run(); // run a screen
-		// check what is the state at the return from the screen
-		unsigned int state = m_controllers[m_activeScreen]->getState();
-		if (state == ROBOT_FOUND_DOOR)
-		{
-			if (moveToNextScreen() == GAME_OVER) //no more screens
-			{
-				m_controllers[m_activeScreen - 1]->printInfo(" GAME WON \n  ;-)");
-				m_controllers[m_activeScreen - 1]->display();
-				Sleep(3000);
-				m_controllers[m_activeScreen - 1]->closeWindow();
-				break;
-			}
-			else // there are more screens so close the prev window 
-				m_controllers[m_activeScreen-1]->closeWindow();
-		}
-		if ((state == GAME_OVER) || (state == EXIT_GAME))
-			break;
-	}
-	switch (hendelEndStartGame()) {
-	case VEND:
-	case VCLOSE:
-		soundSelect.play();
-		return false;
-	case VSTART:
-		soundSelect.play();
-		return true;
-	};
-	return false;
+	m_game[m_activeScreen].printScreen();
+
 }
 
-// handle the screen of exit or start a game
-int Bomberman::hendelEndStartGame()
+// called from main for every move 
+ unsigned int Bomberman::nextMove(unsigned int robotMove)
 {
-	sf::Event event{};
-	m_window.setVisible(true);
-	while (m_window.isOpen())
+	unsigned int screenState;
+
+	// in this function the next move of everything (robot, guard and all mobms)
+	m_game[m_activeScreen].nextMove(robotMove);
+
+	// after nextMove the state of the screen is changed 
+	// the state that bomberman look at are only GAME_OVER 
+	// which is robor killed 3 times or ROBOT_FOUND_DOOR which 
+	// means the robot finshed the sceen with success
+	screenState = m_game[m_activeScreen].getState();
+
+
+	switch (screenState)
 	{
-		m_window.clear();
-		m_window.draw(m_endgame);
-		m_window.draw(m_start);
-		m_window.display();
-		m_window.waitEvent(event);
-		switch (event.type)
-		{
-		case sf::Event::Closed:
-			m_window.close();
-			return VCLOSE;
-			break;
-		case sf::Event::MouseButtonPressed:
-			if (MousePressedHandler(event) == VSTART)
-			{
-				
-				m_window.setVisible(false);
-				return VSTART;
-			}
-			if (MousePressedHandler(event) == VEND)
-			{
-				m_window.close();
-				return VEND;
-			}
-			break;
-		default:
-			break;
-		}
-		
-	}
-	return -1;
-}
-
-
-// checks where the mouse cursor was the click was pressed 
-// this is to decide if start, end or nothing 
-int Bomberman::MousePressedHandler(sf::Event event)
-{
-	const auto coords = m_window.mapPixelToCoords
-	({ event.mouseButton.x, event.mouseButton.y });
-
-	if (m_endgame.getGlobalBounds().contains(coords) == true)
-		return VEND;
-
-	if (m_start.getGlobalBounds().contains(coords) == true)
-		return VSTART;
-	
-	return -1; // the click was outside the two boxes
-}
-
-
-
-// one screen is done now move to the next screen - each screen is a controller
-unsigned int Bomberman::moveToNextScreen()
-{
-	saveDataToNextScrean();
-
-	// active screen is the next one
-	m_activeScreen++;
-	if (m_activeScreen >= m_numOfScreens)
+	case GAME_OVER:
 		return GAME_OVER;
+		break;
+	case ROBOT_FOUND_DOOR:
+	{
+		m_totalPoints = m_game[m_activeScreen].getPoints();
+		m_lifeLeft = m_game[m_activeScreen].getLife();
 
-	// copy the data to the next screen
-	m_controllers[m_activeScreen]->setPoints(m_totalPoints);
-	m_controllers[m_activeScreen]->setLife(m_lifeLeft);
+		// if this is the last screen then the game is won
+		if (m_activeScreen == m_numOfScreens - 1)
+			screenState = GAME_WON;
+		// if more screens move to next screen
+		else
+			moveToNextScreen();
+		return screenState;
+		break;
+	}
+	
+	}
 	return NORMAL;
 }
 
-// reading the data from the current screen so can move it to the next screen
-void Bomberman::saveDataToNextScrean()
-{
-	m_totalPoints = m_controllers[m_activeScreen]->getPoints();
-	m_lifeLeft = m_controllers[m_activeScreen]->getLife();
-}
+ void Bomberman::moveToNextScreen()
+ {
+	 // active screen is the next one
+	 m_activeScreen++;
 
+	 // copy to the new screen the points from the previous screen
+	 m_game[m_activeScreen].setPoints(m_totalPoints);
+
+	 // copy to the new screen that robot lifes that are left
+	 m_game[m_activeScreen].setLife(m_lifeLeft);
+
+	 // print the new screen 
+	 m_game[m_activeScreen].printScreen(); 
+ }
