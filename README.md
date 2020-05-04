@@ -24,7 +24,8 @@ just extract it and run "SFMLInstall.bat" as administrator (extraction path must
 
   
    
-   ![alt text](bomberman_pic.PNG)
+   ![alt text](https://github.com/XOrRonX/Bomberman-Clone/blob/master/%E2%80%8F%E2%80%8Fbomberman_pic.PNG?raw=true)
+   
    
 ### Prorgam explanation: 
 
