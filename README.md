@@ -52,7 +52,11 @@ just extract it and run "SFMLInstall.bat" as administrator (extraction path must
 	3. Ghost Guard - a gaurd that is a ghost becasue it can move through walls, this gaurd
 		can also put bombs, this guard runs after the Robot and whenever it collide with
 		it the guard put a bomb on the robot tryin to kill him with a bomb
+		
+		
+### Class Diagram - UML:
 
+![alt text](https://github.com/XOrRonX/Bomberman-Clone/blob/master/%E2%80%8F%E2%80%8Fbomberman_pic.PNG?raw=true)
 
 ### Design:
 
