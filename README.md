@@ -56,7 +56,7 @@ just extract it and run "SFMLInstall.bat" as administrator (extraction path must
 		
 ### Class Diagram - UML:
 
-![alt text](https://github.com/XOrRonX/Bomberman-Clone/blob/master/%E2%80%8F%E2%80%8Fbomberman_pic.PNG?raw=true)
+![alt text](https://github.com/XOrRonX/Bomberman-Clone/blob/master/%E2%80%8F%E2%80%8FUML%20Bomberman.PNG?raw=true)
 
 ### Design:
 
